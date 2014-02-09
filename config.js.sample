@@ -1,0 +1,8 @@
+module.exports = {
+    gid: 0,
+    appAuthKey: '',
+
+    dbServer: 'localhost',
+    dbPort: 27017,
+    dbName: 'xakep'
+};
