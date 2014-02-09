@@ -1,0 +1,37 @@
+{
+    "name": "xakep2vk",
+    "version": "0.1.0",
+    "description": "Repost new articles from www.xakep.ru to a group in vk.com",
+    "main": "spider.js",
+    "scripts": {
+        "poster": "Logic for work with VK API"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/vanchester/xakep2vk.git"
+    },
+    "keywords": [
+        "xaker",
+        "vk.com",
+        "vk",
+        "вконтакте",
+        "api",
+        "хакер"
+    ],
+    "author": {
+        "name": "vanchester",
+        "email": "admin@vanchester.ru"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "vkontakte": ">= 0.3",
+        "cheerio": ">= 0.13.1",
+        "fibers": ">= 1.0.1",
+        "form-data": ">= 0.1.2",
+        "html-entities": ">= 1.0.10",
+        "iconv": ">= 2.0.7",
+        "mongodb": ">= 1.3.23"
+    },
+    "readme": "## Author\r\n\r\nvanchester (admin@vanchester.ru)\r\n\r\n&copy; 2014\r\n\r\n## License\r\n\r\nMIT",
+    "readmeFilename": "README.md"
+}
