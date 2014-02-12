@@ -8,10 +8,17 @@ var vkontakte = require('vkontakte'),
     vk = vkontakte(config.appAuthKey);
 
 var posterQueue = {
+    checkRights: function () {
+        vk('groups.getById', {gid: config.gid, fields: 'canPost'}, function (err) {
+            console.log(err);
+            throw err;
+        });
+    },
     init: function (mongoClient) {
         this.queue = [];
         this.working = 0;
         this.mongoClient = mongoClient;
+        this.checkRights();
     },
     stop: function () {
         var that = this;
@@ -76,6 +83,7 @@ function wallPostWithPhoto(gid, file, message, postUrl, deleteFileAfterPost)
 {
     vk('photos.getWallUploadServer', {gid: gid}, function (err, data) {
         if (err) {
+            console.log(err);
             throw err;
         }
 
@@ -98,6 +106,7 @@ function wallPostWithPhoto(gid, file, message, postUrl, deleteFileAfterPost)
 
         form.submit({host: urlData.host, path: urlData.path}, function(err, res) {
             if (err) {
+                console.log(err);
                 throw err;
             }
 
@@ -114,6 +123,7 @@ function wallPostWithPhoto(gid, file, message, postUrl, deleteFileAfterPost)
 
                     vk('photos.saveWallPhoto', {server: data.server, photo: data.photo, hash: data.hash, gid: gid}, function (err, data) {
                         if (err) {
+                            console.log(err);
                             throw err;
                         }
                         wallPost(gid, message, data[0].id, postUrl);

@@ -18,26 +18,14 @@ var config = require('./config.js'),
 var db = null;
 
 mongoClient.open(function (err) {
+    if (err) {
+        throw err;
+    }
+
     poster.init(mongoClient);
     db =  mongoClient.db(config.dbName || 'xakep');
 
-    function createIndexIfNotExists()
-    {
-        if (err) throw err;
-
-        db.collection('post').indexInformation(function (err, indexes) {
-            if (!indexes.id_1) {
-                console.log('creating index for collection post');
-                db.createCollection('post', function (err, collection) {
-                    if (!err) {
-                        collection.createIndex({'id': 1}, {'unique': true}, function () {});
-                    }
-                });
-            }
-        });
-    }
-
-    createIndexIfNotExists();
+    createIndexIfNotExists(db);
 
     var callback = function (err, res, body) {
         body = new Buffer(body, 'binary');
@@ -113,3 +101,17 @@ mongoClient.open(function (err) {
 
     poster.stop();
 });
+
+function createIndexIfNotExists(db)
+{
+    db.collection('post').indexInformation(function (err, indexes) {
+        if (!indexes.id_1) {
+            console.log('creating index for collection post');
+            db.createCollection('post', function (err, collection) {
+                if (!err) {
+                    collection.createIndex({'id': 1}, {'unique': true}, function () {});
+                }
+            });
+        }
+    });
+}
