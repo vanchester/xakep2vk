@@ -10,8 +10,10 @@ var vkontakte = require('vkontakte'),
 var posterQueue = {
     checkRights: function () {
         vk('groups.getById', {gid: config.gid, fields: 'canPost'}, function (err) {
-            console.log(err);
-            throw err;
+            if (err) {
+                console.log(err);
+                throw err;
+            }
         });
     },
     init: function (mongoClient) {
