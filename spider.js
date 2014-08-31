@@ -11,8 +11,8 @@ var config = require('./config.js'),
     cheerio = require('cheerio'),
     poster = require('./poster.js'),
     siteSections = [
-        'http://www.xakep.ru/articles/common/news.asp',
-        'http://www.xakep.ru/articles/common/articles.asp'
+        'http://www.xakep.ru/news',
+        'http://www.xakep.ru/x-articles'
     ];
 
 var db = null;
@@ -29,26 +29,24 @@ mongoClient.open(function (err) {
 
     var callback = function (err, res, body) {
         body = new Buffer(body, 'binary');
-        var iconv = new Iconv('windows-1251', 'utf8//IGNORE');
+        var iconv = new Iconv('utf8', 'utf8//IGNORE');
         body = iconv.convert(body).toString();
 
 
         try {
             var $ = cheerio.load(body);
 
-            var messages = $('.large-8.columns.with_ul .row');
+            var messages = $('article');
             var entities = new Entities();
 
             messages.each(function () {
-                var $h = this.find('h5').eq(0),
-                    type = this.find('h5').eq(1).text(),
-                    postUrl = $h.find('a').attr('href'),
-                    postId = parseInt(postUrl.replace(/[^\d]+/, '')),
-                    header = entities.decode($h.text()),
-                    $news = this.find('.news_body'),
+                var $h = this.find('header').eq(0),
+                    type = this.find('.archive-link a').eq(0).text(),
+                    postUrl = $h.find('a').eq(0).attr('href'),
+                    postId = postUrl,
+                    header = entities.decode($h.find('a').eq(0).text()),
+                    $news = this.find('.entry-summary'),
                     imageUrl = this.find('img').eq(0).attr('src');
-
-                $news.find('.news_date').remove();
 
                 db.collection('post').findOne({'id': postId}, function (err, item) {
                     if (err || item) {
@@ -60,13 +58,14 @@ mongoClient.open(function (err) {
                     var text = '[' + type + '] ' + header + '\n\n' + entities.decode($news.text()).replace(/(^[\s\t\r\n]+|[\s\t\r\n]+$)/, '');
 
                     if (imageUrl) {
-                        var file = fs.createWriteStream(postId + '.jpg');
+                        var imgFile = postId.replace(/[^\d\w]/ig, '');
+                        var file = fs.createWriteStream(imgFile + '.jpg');
                         http.get(imageUrl, function (response) {
                             response.pipe(file);
                             response.on('end', function () {
                                 poster.addRequest({
                                     gid: config.gid,
-                                    file: './' + postId + '.jpg',
+                                    file: './' + imgFile + '.jpg',
                                     message: text,
                                     url: postUrl,
                                     delFlag: true
