@@ -11,8 +11,13 @@ var config = require('./config.js'),
     cheerio = require('cheerio'),
     poster = require('./poster.js'),
     siteSections = [
-        'http://www.xakep.ru/news',
-        'http://www.xakep.ru/x-articles'
+        'http://xakep.ru/category/news',
+        'http://xakep.ru/coding/',
+        'http://xakep.ru/malware/',
+        'http://xakep.ru/hack/',
+        'http://xakep.ru/mobile/',
+        'http://xakep.ru/scene/',
+        'http://xakep.ru/syn-ack/'
     ];
 
 var db = null;
@@ -36,17 +41,26 @@ mongoClient.open(function (err) {
         try {
             var $ = cheerio.load(body);
 
-            var messages = $('article');
+            var messages = $('.span6, .td_mod9');
             var entities = new Entities();
 
             messages.each(function () {
-                var $h = this.find('header').eq(0),
-                    type = this.find('.archive-link a').eq(0).text(),
+                var $h = this.find('h3').eq(0),
+                    type = this.find('.entry-category a').eq(0).text(),
                     postUrl = $h.find('a').eq(0).attr('href'),
                     postId = postUrl,
                     header = entities.decode($h.find('a').eq(0).text()),
-                    $news = this.find('.entry-summary'),
+                    $news = this.find('.td_mod2').clone(),
                     imageUrl = this.find('img').eq(0).attr('src');
+
+                if ($news.length == 0) {
+                    $news = this;
+                }
+ 
+                $news.find('div').remove();
+                $news.find('h3').remove();
+                $news.find('meta').remove();
+                $news.find('span').remove();
 
                 db.collection('post').findOne({'id': postId}, function (err, item) {
                     if (err || item) {
