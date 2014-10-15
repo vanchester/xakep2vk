@@ -24,6 +24,8 @@
     },
     "license": "MIT",
     "dependencies": {
+        "request": "*",
+        "process": "*",
         "vkontakte": ">= 0.3",
         "cheerio": ">= 0.13.1",
         "fibers": ">= 1.0.1",
