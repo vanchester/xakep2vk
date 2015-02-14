@@ -13,11 +13,12 @@ var config = require('./config.js'),
     siteSections = [
         'https://xakep.ru/',
         'https://xakep.ru/ferrum/',
-        'https://xakep.ru/coding/',
-        'https://xakep.ru/malware/',
-        'https://xakep.ru/hack/',
-        'https://xakep.ru/mobile/',
         'https://xakep.ru/scene/',
+        'https://xakep.ru/mobile/',
+        'https://xakep.ru/hack/',
+        'https://xakep.ru/malware/',
+        'https://xakep.ru/coding/',
+        'https://xakep.ru/unix/',
         'https://xakep.ru/syn-ack/'
     ];
 
