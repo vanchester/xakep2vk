@@ -5,19 +5,19 @@ var config = require('./config.js'),
     Fiber = require('fibers'),
     Iconv = require('iconv').Iconv,
     request = require('request'),
-    http = require('http'),
+    https = require('https'),
     Entities = require('html-entities').XmlEntities,
     fs = require('fs'),
     cheerio = require('cheerio'),
     poster = require('./poster.js'),
     siteSections = [
-        'http://xakep.ru/category/news',
-        'http://xakep.ru/coding/',
-        'http://xakep.ru/malware/',
-        'http://xakep.ru/hack/',
-        'http://xakep.ru/mobile/',
-        'http://xakep.ru/scene/',
-        'http://xakep.ru/syn-ack/'
+        'https://xakep.ru/',
+        'https://xakep.ru/coding/',
+        'https://xakep.ru/malware/',
+        'https://xakep.ru/hack/',
+        'https://xakep.ru/mobile/',
+        'https://xakep.ru/scene/',
+        'https://xakep.ru/syn-ack/'
     ];
 
 var db = null;
@@ -45,16 +45,16 @@ mongoClient.open(function (err) {
             var entities = new Entities();
 
             messages.each(function () {
-                var $h = this.find('h3').eq(0),
-                    type = this.find('.entry-category a').eq(0).text(),
+                var $h = $(this).find('h3').eq(0),
+                    type = $(this).find('.entry-category a').eq(0).text(),
                     postUrl = $h.find('a').eq(0).attr('href'),
                     postId = postUrl,
                     header = entities.decode($h.find('a').eq(0).text()),
-                    $news = this.find('.td_mod2').clone(),
-                    imageUrl = this.find('img').eq(0).attr('src');
+                    $news = $(this).find('.td_mod2').clone(),
+                    imageUrl = $(this).find('img').eq(0).attr('src');
 
                 if ($news.length == 0) {
-                    $news = this;
+                    $news = $(this);
                 }
  
                 $news.find('div').remove();
@@ -74,7 +74,7 @@ mongoClient.open(function (err) {
                     if (imageUrl) {
                         var imgFile = postId.replace(/[^\d\w]/ig, '');
                         var file = fs.createWriteStream(imgFile + '.jpg');
-                        http.get(imageUrl, function (response) {
+                        https.get(imageUrl, function (response) {
                             response.pipe(file);
                             response.on('end', function () {
                                 poster.addRequest({
