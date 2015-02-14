@@ -12,6 +12,7 @@ var config = require('./config.js'),
     poster = require('./poster.js'),
     siteSections = [
         'https://xakep.ru/',
+        'https://xakep.ru/ferrum/',
         'https://xakep.ru/coding/',
         'https://xakep.ru/malware/',
         'https://xakep.ru/hack/',
